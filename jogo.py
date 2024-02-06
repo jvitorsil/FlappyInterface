@@ -1,5 +1,10 @@
 import flappy
 import pyxel
+
+import birdControl
+import threading
+import time
+
 ...  # Coloque outros imports aqui!
 
 
@@ -32,4 +37,8 @@ def desenhar():
 #
 # Iniciar jogo
 #
+receptor = birdControl.Receptor()  # Instancie a classe Receptor
+thread_recebe_dados = threading.Thread(target=receptor.recebe_dados)
+thread_recebe_dados.start()
+
 flappy.comecar()
