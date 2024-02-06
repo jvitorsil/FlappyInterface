@@ -1,6 +1,11 @@
 import socket
 import sys
 import time
+import threading
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+from collections import deque
 
 class Receptor:
     def __init__(self):
@@ -11,21 +16,70 @@ class Receptor:
         self.flexValue = 0 
         self.MPUValue = 0
         self.freqValue = 1
-
+        self.buttonValue = 0
 
     def recebe_dados(self):
         while True:
             data, addr = self.sock.recvfrom(1024)
             payload = data.decode()
-            self.flexValue = payload.split(";")[0]
-            self.buttonValue = payload.split(";")[1]
-            self.freqValue = payload.split(";")[2]
-            self.MPUValue = payload.split(";")[3]
+            self.flexValue = float(payload.split(";")[0])
+            self.buttonValue = int(payload.split(";")[1])
+            self.freqValue = float(payload.split(";")[2])
+            self.MPUValue = float(payload.split(";")[3])
 
-            print(self.flexValue)
-            
-    # def obter_flexValue(self):
-    #     return self.MPUValue
+    def obter_flexValue(self):
+        return self.flexValue
+    
+    def obter_freqValue(self):
+        return self.freqValue
+# Função para inicializar o gráfico
+def iniciar_grafico():
+    buffer_size = 50
+    tempo = np.arange(0, buffer_size)
+    flex_values = deque([0] * buffer_size, maxlen=buffer_size)
+    freq_values = deque([0] * buffer_size, maxlen=buffer_size)  # New deque for freq_values
 
-    # def obter_freqValue(self):
-    #     return int(self.freqValue)
+    fig, ax = plt.subplots()
+    line1, = ax.plot(tempo, flex_values, label='Flex Sensor Value')  # Line for flex_values
+    line2, = ax.plot(tempo, freq_values, label='Freq Sensor Value')  # New line for freq_values
+
+    ax.set_xlabel('Tempo')
+    ax.set_ylabel('Sensor Values')
+    ax.set_title('Gráfico em Tempo Real do Flex Sensor e Freq Sensor')
+    ax.set_ylim(-10, 1024)  # Substitua 1024 pelo valor máximo desejado
+    ax.legend()  # Add a legend to distinguish between the two lines
+
+    return fig, ax, line1, line2, flex_values, freq_values  # Return the new line and deque
+
+# Função de animação para atualizar o gráfico em tempo real
+def atualizar_grafico(frame, receptor, line1, line2, flex_values, freq_values):  # Add line2 and freq_values as parameters
+    flex_values.append(receptor.obter_flexValue())
+    freq_values.append(receptor.obter_freqValue())  # Append the new freqValue to freq_values
+
+    line1.set_ydata(flex_values)  # Update the y-data of line1
+    line2.set_ydata(freq_values)  # Update the y-data of line2
+
+    return line1, line2  # Return both lines
+
+def main():
+    receptor = Receptor()
+    fig, ax, line1, line2, flex_values, freq_values = iniciar_grafico()
+
+    # Iniciar thread para receber dados
+    thread_receber = threading.Thread(target=receptor.recebe_dados)
+    thread_receber.daemon = True
+    thread_receber.start()
+
+    # Iniciar animação
+    animacao = FuncAnimation(fig, atualizar_grafico, fargs=(receptor,  line1, line2, flex_values, freq_values), interval=100)
+
+    plt.show()
+
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        sys.exit(0)
+
+if __name__ == "__main__":
+    main()
