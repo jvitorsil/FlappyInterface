@@ -126,9 +126,6 @@ def desenhar():
         pyxel.text(LARGURA // 2 - len(msg) * 2, ALTURA // 2, msg, 7)
 
 
-#
-# Iniciar jogo
-#
 reiniciar() 
 pyxel.init(width=LARGURA, height=ALTURA, fps=35)
 pyxel.load('data.pyxres')

@@ -36,24 +36,18 @@ def atualizar_grafico(frame, receptor, line1, line2, flex_values, freq_values):
     return line1, line2  
 
 def main():
-    receptor = birdControl.Receptor()
+    receptor = birdControl.Receiver()
     fig, ax, line1, line2, flex_values, freq_values = iniciar_grafico()
 
     # Iniciar thread para receber dados
-    thread_receber = threading.Thread(target=receptor.recebe_dados)
+    thread_receber = threading.Thread(target=receptor.readData)
     thread_receber.daemon = True
     thread_receber.start()
 
     # Iniciar animação
-    animacao = FuncAnimation(fig, atualizar_grafico, fargs=(receptor,  line1, line2, flex_values, freq_values), interval=50)
+    animacao = FuncAnimation(fig, atualizar_grafico, fargs=(receptor,  line1, line2, flex_values, freq_values), interval=100)
 
     plt.show()
-
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        sys.exit(0)
 
 if __name__ == "__main__":
     main()

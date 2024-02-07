@@ -1,7 +1,7 @@
 import socket
 import threading
 
-class Receptor:
+class Receiver:
     def __init__(self):
         self.UDP_IP = "0.0.0.0"
         self.UDP_PORT = 1665
@@ -12,7 +12,7 @@ class Receptor:
         self.freqValue = 1
         self.buttonValue = 0
 
-    def recebe_dados(self):
+    def readData(self):
         while True:
             data, addr = self.sock.recvfrom(1024)
             payload = data.decode()
@@ -30,6 +30,6 @@ class Receptor:
         return self.freqValue
     
 if __name__ == '__main__':
-    receptor = Receptor()  # Instancie a classe Receptor
-    thread_recebe_dados = threading.Thread(target=receptor.recebe_dados)
-    thread_recebe_dados.start()
+    receiver = Receiver()  # Instancie a classe Receptor
+    threadReceiveData = threading.Thread(target=receiver.readData)
+    threadReceiveData.start()

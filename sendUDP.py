@@ -6,7 +6,7 @@ UDP_PORT = 1665
 
 flexValue = 0.0
 buttonValue = 0
-freqValue = 50.0
+freqValue = 5.0
 MPUValue = 0.0
 
 while True:
@@ -14,8 +14,8 @@ while True:
     if flexValue >= 100:
         flexValue = 0.0
         freqValue += 1
-        if freqValue >= 100:
-            freqValue = 50.0
+        if freqValue >= 20:
+            freqValue = 5.0
 
     if MPUValue >= 100:
         MPUValue = 0.0
@@ -29,7 +29,7 @@ while True:
 
     print(payloadEncode)
 
-    flexValue += 1.0
+    flexValue += 10.0
     MPUValue += 2.0
 
     time.sleep(1/freqValue)
