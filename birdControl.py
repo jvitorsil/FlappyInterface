@@ -37,29 +37,29 @@ def iniciar_grafico():
     buffer_size = 50
     tempo = np.arange(0, buffer_size)
     flex_values = deque([0] * buffer_size, maxlen=buffer_size)
-    freq_values = deque([0] * buffer_size, maxlen=buffer_size)  # New deque for freq_values
+    freq_values = deque([0] * buffer_size, maxlen=buffer_size)  
 
     fig, ax = plt.subplots()
-    line1, = ax.plot(tempo, flex_values, label='Flex Sensor Value')  # Line for flex_values
-    line2, = ax.plot(tempo, freq_values, label='Freq Sensor Value')  # New line for freq_values
+    line1, = ax.plot(tempo, flex_values, label='Flex Sensor Value') 
+    line2, = ax.plot(tempo, freq_values, label='Freq Sensor Value')  
 
     ax.set_xlabel('Tempo')
     ax.set_ylabel('Sensor Values')
     ax.set_title('Gráfico em Tempo Real do Flex Sensor e Freq Sensor')
     ax.set_ylim(-10, 1024)  # Substitua 1024 pelo valor máximo desejado
-    ax.legend()  # Add a legend to distinguish between the two lines
+    ax.legend()  
 
-    return fig, ax, line1, line2, flex_values, freq_values  # Return the new line and deque
+    return fig, ax, line1, line2, flex_values, freq_values  
 
 # Função de animação para atualizar o gráfico em tempo real
-def atualizar_grafico(frame, receptor, line1, line2, flex_values, freq_values):  # Add line2 and freq_values as parameters
+def atualizar_grafico(frame, receptor, line1, line2, flex_values, freq_values):  
     flex_values.append(receptor.obter_flexValue())
-    freq_values.append(receptor.obter_freqValue())  # Append the new freqValue to freq_values
+    freq_values.append(receptor.obter_freqValue()) 
 
-    line1.set_ydata(flex_values)  # Update the y-data of line1
-    line2.set_ydata(freq_values)  # Update the y-data of line2
-
-    return line1, line2  # Return both lines
+    line1.set_ydata(flex_values)  
+    line2.set_ydata(freq_values)  
+    
+    return line1, line2  
 
 def main():
     receptor = Receptor()
@@ -71,7 +71,7 @@ def main():
     thread_receber.start()
 
     # Iniciar animação
-    animacao = FuncAnimation(fig, atualizar_grafico, fargs=(receptor,  line1, line2, flex_values, freq_values), interval=100)
+    animacao = FuncAnimation(fig, atualizar_grafico, fargs=(receptor,  line1, line2, flex_values, freq_values), interval=50)
 
     plt.show()
 
