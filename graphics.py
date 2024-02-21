@@ -20,7 +20,7 @@ def iniciar_grafico():
     ax.set_xlabel('Tempo')
     ax.set_ylabel('Sensor Values')
     ax.set_title('Gráfico em Tempo Real do Flex Sensor e Freq Sensor')
-    ax.set_ylim(-10, 1024)  # Substitua 1024 pelo valor máximo desejado
+    ax.set_ylim(0, 4095)  # Substitua 1024 pelo valor máximo desejado
     ax.legend()  
 
     return fig, ax, line1, line2, flex_values, freq_values  
@@ -39,7 +39,6 @@ def main():
     receptor = birdControl.Receiver()
     fig, ax, line1, line2, flex_values, freq_values = iniciar_grafico()
 
-    # Iniciar thread para receber dados
     thread_receber = threading.Thread(target=receptor.readData)
     thread_receber.daemon = True
     thread_receber.start()

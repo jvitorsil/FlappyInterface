@@ -1,6 +1,8 @@
 from collections import namedtuple
 from random import randrange
 import pyxel
+import birdControl
+import threading
 
 #
 # Constantes
@@ -8,8 +10,6 @@ import pyxel
 LARGURA = 255
 ALTURA = 255
 ABERTURA = 200
-GRAVIDADE = 1
-
 
 def atualizar():
     """
@@ -38,13 +38,12 @@ def reiniciar():
     """
     Reinicia as variáveis de estado que controlam o jogo.
     """
-    global ativo, morto, flappy_x, flappy_y, score, velocidade, canos
+    global ativo, morto, flappy_x, flappy_y, score, canos
 
     ativo = False
     morto = False
     flappy_x = LARGURA / 3
     flappy_y = ALTURA / 2
-    velocidade = 0
     canos = [((i * 80) + LARGURA, randrange(-100, 0, 10)) for i in range(4)]
     score = 0
 
@@ -53,18 +52,14 @@ def atualizar_jogo():
     """
     Atualiza as variáveis em cada frame de jogo.
     """
-    global velocidade, flappy_x, flappy_y, morto, score
-    
-    # Atualiza o Flappy calculando a gravidade e a existência de pulos
-    velocidade += GRAVIDADE
-    if not morto and (pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.KEY_UP)):
-        velocidade = -8
-    flappy_y += velocidade
-    
-    # Limita velocidade e impõe deslocamento quando jogador morrer
-    flappy_y = min(flappy_y, ALTURA - 29)
-    if morto:
-        flappy_x -= 1
+    global flappy_x, flappy_y, morto, score
+
+    # receptor = birdControl.Receiver()
+    receptor = birdControl.Receiver()
+
+    # Atualiza a posição do pássaro obtida da thread
+    flappy_y = receptor.obter_flexValue()
+    print(receptor.obter_flexValue())
 
     # Atualiza os canos movendo cada posição x 1 pixel para a esquerda.
     # Caso o cano ultrapasse o início da tela, cria um novo cano.
@@ -130,3 +125,9 @@ reiniciar()
 pyxel.init(width=LARGURA, height=ALTURA, fps=35)
 pyxel.load('data.pyxres')
 pyxel.run(atualizar, desenhar)
+
+receptor = birdControl.Receiver()
+
+thread_receber = threading.Thread(target=receptor.readData)
+thread_receber.daemon = True
+thread_receber.start()
