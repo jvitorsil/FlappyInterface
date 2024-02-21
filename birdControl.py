@@ -21,11 +21,10 @@ class Receiver:
 
             # self.flexValue = float(payload.split(";")[0])
             
-            # self.flexValue = [i.split(';')[0] for i in allData]
-            # self.freqValue = float(payload.split(";")[1])
+            self.flexValue = list(map(int, [i.split(';')[0] for i in allData]))
+            self.freqValue = list(map(int, [i.split(';')[1] for i in allData]))
             
-            print(payload)
-            
+            print("Flex Value: " + str(self.flexValue) + " | Freq Value: " + str(self.freqValue))            
 
     def obter_flexValue(self):
         return self.flexValue
