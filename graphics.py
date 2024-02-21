@@ -8,7 +8,7 @@ from matplotlib.animation import FuncAnimation
 from collections import deque
 
 def iniciar_grafico():
-    buffer_size = 500
+    buffer_size = 70
 
     tempo = np.arange(0, buffer_size)
 
@@ -24,19 +24,19 @@ def iniciar_grafico():
     ax.set_ylabel('Sensor Values')
     ax.set_title('Gráfico em Tempo Real do Flex Sensor e Freq Sensor')
 
-    ax.set_ylim(0, 500) 
+    ax.set_ylim(0, 550) 
     ax.legend()  
 
     return fig, ax, line1, line2, flex_values, freq_values  
 
 # Função de animação para atualizar o gráfico em tempo real
 def atualizar_grafico(frame, receptor, line1, line2, flex_values, freq_values):  
-    flex_values.append(receptor.obter_flexValue())
-    freq_values.append(receptor.obter_freqValue()) 
+    flex_values.extend(receptor.obter_flexValue())
+    freq_values.extend(receptor.obter_freqValue()) 
 
     line1.set_ydata(np.array(flex_values))
     line2.set_ydata(np.array(freq_values))
-    
+
     return line1, line2  
 
 def main():
@@ -48,7 +48,7 @@ def main():
     thread_receber.start()
 
     # Iniciar animação
-    animacao = FuncAnimation(fig, atualizar_grafico, fargs=(receptor,  line1, line2, flex_values, freq_values), interval = 100) #interval=1000/receptor.obter_flexValue())
+    animacao = FuncAnimation(fig, atualizar_grafico, fargs=(receptor,  line1, line2, flex_values, freq_values), interval = 0.001) #interval=1000/receptor.obter_flexValue())
 
     plt.show()
 
