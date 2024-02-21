@@ -44,7 +44,7 @@ def main():
     thread_receber.start()
 
     # Iniciar animação
-    animacao = FuncAnimation(fig, atualizar_grafico, fargs=(receptor,  line1, line2, flex_values, freq_values), interval=100)
+    animacao = FuncAnimation(fig, atualizar_grafico, fargs=(receptor,  line1, line2, flex_values, freq_values), interval=1000/receptor.obter_flexValue())
 
     plt.show()
 

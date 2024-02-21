@@ -19,12 +19,12 @@ class Receiver:
             payload = data.decode()
             allData = payload.split("/")
 
-            self.flexValue = float(payload.split(";")[0])
+            # self.flexValue = float(payload.split(";")[0])
             
             # self.flexValue = [i.split(';')[0] for i in allData]
             # self.freqValue = float(payload.split(";")[1])
             
-            print(allData)
+            print(payload)
             
 
     def obter_flexValue(self):
